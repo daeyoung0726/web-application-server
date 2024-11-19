@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Page</title>
+</head>
+<body>
+<h1>마이페이지</h1>
+<div id="userInfo"></div>
+<a href="update-user.html">회원 정보 수정</a>
+
+<script>
+    // 마이페이지 정보 가져오기
+    async function fetchUserInfo() {
+        try {
+            const response = await fetch('/users/me');
+            if (!response.ok) {
+                throw new Error('사용자 정보를 가져오지 못했습니다.');
+            }
+            const userInfo = await response.json();
+            const userInfoDiv = document.getElementById('userInfo');
+            userInfoDiv.innerHTML = `
+                    <p>Username: ${userInfo.username}</p>
+                    <p>Name: ${userInfo.name}</p>
+                    <p>Email: ${userInfo.email}</p>
+                `;
+        } catch (error) {
+            console.error('Error fetching user info:', error);
+        }
+    }
+
+    // 페이지 로드 시 사용자 정보 가져오기
+    window.onload = fetchUserInfo;
+</script>
+</body>
+</html>
