@@ -1,7 +1,7 @@
 package board.server;
 
-import board.common.util.http.HttpRequest;
-import board.common.util.http.HttpResponse;
+import board.common.http.HttpRequest;
+import board.common.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

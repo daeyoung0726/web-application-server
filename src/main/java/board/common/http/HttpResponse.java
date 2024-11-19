@@ -1,4 +1,4 @@
-package board.common.util.http;
+package board.common.http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
