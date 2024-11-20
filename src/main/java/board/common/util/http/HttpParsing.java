@@ -10,6 +10,10 @@ public class HttpParsing {
         return parseValues(queryString, "&");
     }
 
+    public static Map<String, String> parseCookies(String cookies) {
+        return parseValues(cookies, ";");
+    }
+
     private static Map<String, String> parseValues(String values, String separator) {
         if (values == null || values.isEmpty()) {
             return Map.of();

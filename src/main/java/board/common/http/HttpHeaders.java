@@ -10,6 +10,7 @@ class HttpHeaders {
     private static final Logger log = LoggerFactory.getLogger(HttpHeaders.class);
 
     private static final String CONTENT_LENGTH = "Content-Length";
+    private static final String COOKIE = "Cookie";
 
     private Map<String, String> headers = new HashMap<>();
 
@@ -26,5 +27,13 @@ class HttpHeaders {
     int getContentLength() {
         String header = getHeader(CONTENT_LENGTH);
         return header == null ? 0 : Integer.parseInt(header);
+    }
+
+    HttpCookie getCookies() {
+        return new HttpCookie(getHeader(COOKIE));
+    }
+
+    HttpSession getSession() {
+        return HttpSessions.getSession(getCookies().getCookie(HttpSessions.SESSION_ID_NAME));
     }
 }

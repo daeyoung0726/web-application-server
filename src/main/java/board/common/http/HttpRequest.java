@@ -74,4 +74,12 @@ public class HttpRequest {
     public String getParam(String key) {
         return params.getParameter(key);
     }
+
+    public HttpCookie getCookies() {
+        return headers.getCookies();
+    }
+
+    public HttpSession getSession() {
+        return headers.getSession();
+    }
 }
