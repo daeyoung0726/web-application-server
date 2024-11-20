@@ -23,6 +23,10 @@ public class HttpResponse {
         dos = new DataOutputStream(out);
     }
 
+    public void addHeader(String key, String value) {
+        headers.put(key, value);
+    }
+
     public void forward(String url) {
         try {
             byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
@@ -36,6 +40,25 @@ public class HttpResponse {
             headers.put("Content-Length", body.length + "");
             response200Header();
             responseBody(body);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    public void forwardBody(String body) {
+        byte[] contents = body.getBytes();
+        headers.put("Content-Type", "text/html;charset=utf-8");
+        headers.put("Content-Length", contents.length + "");
+        response200Header();
+        responseBody(contents);
+    }
+
+    public void sendRedirect(String redirectUrl) {
+        try {
+            dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            processHeaders();
+            dos.writeBytes("Location: " + redirectUrl + " \r\n");
+            dos.writeBytes("\r\n");
         } catch (IOException e) {
             log.error(e.getMessage());
         }
