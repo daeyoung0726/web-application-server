@@ -4,8 +4,8 @@ import java.util.List;
 
 public interface DataBase<T> {
     void add(T o);
-    T findById(Long id);
+    T findById(Object id);
     List<T> findAll();
-    void updateById(Long id, T o);
-    void deleteById(Long id);
+    void updateById(Object id, T o);
+    void deleteById(Object id);
 }

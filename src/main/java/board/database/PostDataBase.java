@@ -26,8 +26,8 @@ public class PostDataBase implements DataBase<Post> {
     }
 
     @Override
-    public Post findById(Long id) {
-        return postMap.get(id);
+    public Post findById(Object id) {
+        return postMap.get((Long) id);
     }
 
     @Override
@@ -36,8 +36,8 @@ public class PostDataBase implements DataBase<Post> {
     }
 
     @Override
-    public void updateById(Long id, Post post) {
-        Post foundPost = postMap.get(id);
+    public void updateById(Object id, Post post) {
+        Post foundPost = postMap.get((Long) id);
 
         if (foundPost == null)
             throw new IllegalArgumentException("존재하지 않는 게시글입니다.");
@@ -45,7 +45,7 @@ public class PostDataBase implements DataBase<Post> {
     }
 
     @Override
-    public void deleteById(Long id) {
-        postMap.remove(id);
+    public void deleteById(Object id) {
+        postMap.remove((Long) id);
     }
 }
