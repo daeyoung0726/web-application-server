@@ -1,7 +1,6 @@
 package board.domain.user.model;
 
 public class User {
-    private Long id;
     private String username;
     private String password;
     private String name;
@@ -12,10 +11,6 @@ public class User {
         this.password = password;
         this.name = name;
         this.email = email;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getUsername() {
@@ -34,10 +29,6 @@ public class User {
         return email;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public boolean matchPassword(String password) {
         return this.password.equals(password);
     }
@@ -51,8 +42,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User [id=" + id +
-                ", username=" + username +
+        return "User [username=" + username +
                 ", password=" + password +
                 ", name=" + name +
                 ", email=" + email +
