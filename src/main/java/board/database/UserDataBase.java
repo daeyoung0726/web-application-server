@@ -1,6 +1,5 @@
 package board.database;
 
-import board.domain.user.controller.CreateUserController;
 import board.domain.user.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserDataBase implements DataBase<User> {
@@ -49,7 +47,7 @@ public class UserDataBase implements DataBase<User> {
             throw new IllegalArgumentException("존재하지 않는 계정입니다.");
         foundUser.updateInfo(user);
 
-        log.debug("updated User : {}", userMap.get(user.getUsername()));
+        log.debug("updated User : {}", userMap.get(id));
     }
 
     @Override
