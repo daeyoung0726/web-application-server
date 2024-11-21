@@ -3,6 +3,8 @@ package board.domain.user.service;
 import board.domain.user.model.User;
 import board.domain.user.repository.UserDao;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class UserService {
@@ -18,7 +20,7 @@ public class UserService {
     }
 
     public void saveUser(User user) {
-        userDao.saveUser(user);
+        userDao.saveUser(decodeUser(user));
     }
 
     public User findUserById(String username) {
@@ -35,5 +37,14 @@ public class UserService {
 
     public void deleteUser(String username) {
         userDao.deleteUser(username);
+    }
+
+    private User decodeUser(User user) {
+        return new User(
+                URLDecoder.decode(user.getUsername(), StandardCharsets.UTF_8),
+                user.getPassword(),
+                URLDecoder.decode(user.getName(), StandardCharsets.UTF_8),
+                URLDecoder.decode(user.getEmail(), StandardCharsets.UTF_8)
+        );
     }
 }
