@@ -23,10 +23,11 @@ public class UserDataBase implements DataBase<User> {
     }
 
     @Override
-    public void add(User user) {
+    public Object add(User user) {
         userMap.put(user.getUsername(), user);
 
         log.debug("saved User : {}", userMap.get(user.getUsername()));
+        return user.getUsername();
     }
 
     @Override

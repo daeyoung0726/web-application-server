@@ -1,6 +1,8 @@
 package board.database;
 
 import board.domain.post.model.Post;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +10,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PostDataBase implements DataBase<Post> {
+    private static final Logger log = LoggerFactory.getLogger(PostDataBase.class);
+
     private static final Map<Long, Post> postMap = new ConcurrentHashMap<>();
     private static Long idCounter = 1L;
 
@@ -20,9 +24,11 @@ public class PostDataBase implements DataBase<Post> {
     }
 
     @Override
-    public void add(Post post) {
+    public Long add(Post post) {
         post.setId(idCounter++);
         postMap.put(post.getId(), post);
+
+        return post.getId();
     }
 
     @Override
@@ -42,6 +48,8 @@ public class PostDataBase implements DataBase<Post> {
         if (foundPost == null)
             throw new IllegalArgumentException("존재하지 않는 게시글입니다.");
         foundPost.updatePost(post);
+
+        log.debug("updated post : {}", postMap.get(id));
     }
 
     @Override
