@@ -11,9 +11,12 @@
 <nav>
     <a href="./user/signin.html">로그인</a>
     <a href="./user/signup.html">회원가입</a>
-    <a href="/users/sign-out">로그아웃</a>
+    <form action="/users/sign-out" method="POST" style="display: inline;">
+        <button type="submit">로그아웃</button>
+    </form>
     <a href="./user/my.html">마이페이지</a>
     <a href="./post/write.html">글쓰기</a>
+    <a href="./user/users.html">전체 회원 불러오기</a>
 </nav>
 <h2>게시글 목록</h2>
 <ul id="postList"></ul>

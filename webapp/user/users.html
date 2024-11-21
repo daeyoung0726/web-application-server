@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전체 회원 목록</title>
+</head>
+<body>
+<h1>전체 회원 목록</h1>
+<ul id="userList"></ul>
+
+<script>
+    // 전체 회원 목록 가져오기
+    async function fetchUsers() {
+        try {
+            const response = await fetch('/users');
+            if (!response.ok) {
+                throw new Error('회원 목록을 가져오지 못했습니다.');
+            }
+            const users = await response.json();
+            const userList = document.getElementById('userList');
+            userList.innerHTML = ''; // 기존 목록 초기화
+
+            users.forEach(user => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Username: ${user.username}, Name: ${user.name}, Email: ${user.email}`;
+                userList.appendChild(listItem);
+            });
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        }
+    }
+
+    // 페이지 로드 시 회원 목록 가져오기
+    window.onload = fetchUsers;
+</script>
+</body>
+</html>
