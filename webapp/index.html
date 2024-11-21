@@ -22,7 +22,6 @@
 <ul id="postList"></ul>
 
 <script>
-    // 게시글 목록 가져오기
     async function fetchPosts() {
         try {
             const response = await fetch('/posts');
@@ -31,7 +30,7 @@
             }
             const posts = await response.json();
             const postList = document.getElementById('postList');
-            postList.innerHTML = ''; // 기존 목록 초기화
+            postList.innerHTML = '';
 
             posts.forEach(post => {
                 const listItem = document.createElement('li');
@@ -46,7 +45,6 @@
         }
     }
 
-    // 페이지 로드 시 게시글 가져오기
     window.onload = fetchPosts;
 </script>
 </body>

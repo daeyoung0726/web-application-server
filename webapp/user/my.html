@@ -14,7 +14,6 @@
 <button id="deleteUserBtn">회원 탈퇴</button>
 
 <script>
-    // 마이페이지 정보 가져오기
     async function fetchUserInfo() {
         try {
             const response = await fetch('/users/me');
@@ -33,7 +32,6 @@
         }
     }
 
-    // 회원 탈퇴 요청
     async function deleteUser() {
         if (confirm('정말로 탈퇴하시겠습니까?')) {
             try {
@@ -47,7 +45,6 @@
                     throw new Error('회원 탈퇴에 실패했습니다.');
                 }
                 alert('회원 탈퇴가 완료되었습니다.');
-                // 탈퇴 후 처리 (예: 메인 페이지로 이동)
                 window.location.href = '/';
             } catch (error) {
                 console.error('Error deleting user:', error);
@@ -55,11 +52,9 @@
             }
         }
     }
-
-    // 페이지 로드 시 사용자 정보 가져오기
+z
     window.onload = fetchUserInfo;
 
-    // 회원 탈퇴 버튼 이벤트 리스너
     const deleteUserBtn = document.getElementById('deleteUserBtn');
     deleteUserBtn.addEventListener('click', deleteUser);
 </script>

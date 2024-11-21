@@ -11,7 +11,6 @@
 <ul id="userList"></ul>
 
 <script>
-    // 전체 회원 목록 가져오기
     async function fetchUsers() {
         try {
             const response = await fetch('/users');
@@ -20,7 +19,7 @@
             }
             const users = await response.json();
             const userList = document.getElementById('userList');
-            userList.innerHTML = ''; // 기존 목록 초기화
+            userList.innerHTML = '';
 
             users.forEach(user => {
                 const listItem = document.createElement('li');
@@ -32,7 +31,6 @@
         }
     }
 
-    // 페이지 로드 시 회원 목록 가져오기
     window.onload = fetchUsers;
 </script>
 </body>
