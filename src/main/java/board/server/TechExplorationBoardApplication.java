@@ -10,7 +10,7 @@ public class TechExplorationBoardApplication {
     private static final Logger log = LoggerFactory.getLogger(TechExplorationBoardApplication.class);
     private static final int PORT = 8080;
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
 
         try (ServerSocket listenSocket = new ServerSocket(PORT)) {
             log.info("Server started {} port.", PORT);
