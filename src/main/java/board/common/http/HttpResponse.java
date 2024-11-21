@@ -53,6 +53,14 @@ public class HttpResponse {
         responseBody(contents);
     }
 
+    public void forwardJson(String json) {
+        byte[] contents = json.getBytes();
+        headers.put("Content-Type", "application/json;charset=utf-8");
+        headers.put("Content-Length", contents.length + "");
+        response200Header();
+        responseBody(contents);
+    }
+
     public void sendRedirect(String redirectUrl) {
         try {
             dos.writeBytes("HTTP/1.1 302 Found \r\n");

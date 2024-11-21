@@ -20,4 +20,8 @@ public class HttpSession {
         return values.get(name);
     }
 
+    public void removeAttribute(String name) {
+        values.remove(name);
+    }
+
 }
