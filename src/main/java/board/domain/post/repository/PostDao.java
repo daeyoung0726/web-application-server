@@ -24,16 +24,11 @@ public class PostDao {
         return postDao;
     }
 
-    private final RowMapper<Post> postMapper = new RowMapper<Post>() {
-        @Override
-        public Post mapRow(ResultSet rs) throws SQLException {
-            return new Post(
-                    rs.getLong("id"),
-                    rs.getString("title"),
-                    rs.getString("content")
-            );
-        }
-    };
+    private final RowMapper<Post> postMapper = rs -> new Post(
+            rs.getLong("id"),
+            rs.getString("title"),
+            rs.getString("content")
+    );
 
     public Long savePost(Post post) {
         String sql = "INSERT INTO \"Post\"(title, content) VALUES(?, ?)";

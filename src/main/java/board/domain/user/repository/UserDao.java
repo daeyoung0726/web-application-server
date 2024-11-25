@@ -23,17 +23,12 @@ public class UserDao {
         return userDao;
     }
 
-    private final RowMapper<User> userMapper = new RowMapper<User>() {
-        @Override
-        public User mapRow(ResultSet rs) throws SQLException {
-            return new User(
-                    rs.getString("username"),
-                    rs.getString("password"),
-                    rs.getString("name"),
-                    rs.getString("email")
-            );
-        }
-    };
+    private final RowMapper<User> userMapper = rs -> new User(
+            rs.getString("username"),
+            rs.getString("password"),
+            rs.getString("name"),
+            rs.getString("email")
+    );
 
     public void saveUser(User user) {
         String sql = "INSERT INTO \"User\"(username, password, name, email) VALUES(?, ?, ?, ?)";
