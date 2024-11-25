@@ -32,7 +32,7 @@ public class UserService {
     }
 
     public void updateUser(String username, User user) {
-        userDao.updateUser(username, user);
+        userDao.updateUser(username, decodeUser(user));
     }
 
     public void deleteUser(String username) {
@@ -40,6 +40,14 @@ public class UserService {
     }
 
     private User decodeUser(User user) {
+        if (user.getUsername() == null) {
+            return new User(
+                    user.getPassword(),
+                    URLDecoder.decode(user.getName(), StandardCharsets.UTF_8),
+                    URLDecoder.decode(user.getEmail(), StandardCharsets.UTF_8)
+            );
+        }
+
         return new User(
                 URLDecoder.decode(user.getUsername(), StandardCharsets.UTF_8),
                 user.getPassword(),
