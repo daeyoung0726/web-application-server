@@ -1,6 +1,7 @@
 package board.domain.post.repository;
 
 import board.database.ConnectionManager;
+import board.database.RowMapper;
 import board.database.exception.DataAccessException;
 import board.domain.post.exception.PostException;
 import board.domain.post.exception.PostExceptionCode;
@@ -22,6 +23,17 @@ public class PostDao {
     public static PostDao getInstance() {
         return postDao;
     }
+
+    private final RowMapper<Post> postMapper = new RowMapper<Post>() {
+        @Override
+        public Post mapRow(ResultSet rs) throws SQLException {
+            return new Post(
+                    rs.getLong("id"),
+                    rs.getString("title"),
+                    rs.getString("content")
+            );
+        }
+    };
 
     public Long savePost(Post post) {
         String sql = "INSERT INTO \"Post\"(title, content) VALUES(?, ?)";
@@ -59,11 +71,7 @@ public class PostDao {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                post = new Post(
-                        rs.getLong("id"),
-                        rs.getString("title"),
-                        rs.getString("content")
-                );
+                post = postMapper.mapRow(rs);
             }
 
             rs.close();
@@ -86,11 +94,7 @@ public class PostDao {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                Post post = new Post(
-                        rs.getLong("id"),
-                        rs.getString("title"),
-                        rs.getString("content")
-                );
+                Post post = postMapper.mapRow(rs);
                 posts.add(post);
             }
 

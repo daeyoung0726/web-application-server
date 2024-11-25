@@ -1,6 +1,7 @@
 package board.domain.user.repository;
 
 import board.database.ConnectionManager;
+import board.database.RowMapper;
 import board.database.exception.DataAccessException;
 import board.domain.user.exception.UserException;
 import board.domain.user.exception.UserExceptionCode;
@@ -21,6 +22,18 @@ public class UserDao {
     public static UserDao getInstance() {
         return userDao;
     }
+
+    private final RowMapper<User> userMapper = new RowMapper<User>() {
+        @Override
+        public User mapRow(ResultSet rs) throws SQLException {
+            return new User(
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("name"),
+                    rs.getString("email")
+            );
+        }
+    };
 
     public void saveUser(User user) {
         String sql = "INSERT INTO \"User\"(username, password, name, email) VALUES(?, ?, ?, ?)";
@@ -51,12 +64,7 @@ public class UserDao {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                user = new User(
-                        rs.getString("username"),
-                        rs.getString("password"),
-                        rs.getString("name"),
-                        rs.getString("email")
-                );
+                user = userMapper.mapRow(rs);
             }
 
             rs.close();
@@ -80,12 +88,7 @@ public class UserDao {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                User user = new User(
-                        rs.getString("username"),
-                        rs.getString("password"),
-                        rs.getString("name"),
-                        rs.getString("email")
-                );
+                User user = userMapper.mapRow(rs);
                 users.add(user);
             }
 
