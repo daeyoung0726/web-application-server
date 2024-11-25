@@ -1,6 +1,7 @@
 package board.domain.post.repository;
 
 import board.database.ConnectionManager;
+import board.database.PreparedStatementSetter;
 import board.database.RowMapper;
 import board.database.exception.DataAccessException;
 import board.domain.post.exception.PostException;
@@ -37,8 +38,12 @@ public class PostDao {
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            pstmt.setString(1, post.getTitle());
-            pstmt.setString(2, post.getContent());
+            PreparedStatementSetter pstmtSetter =
+                    runPreparedStatementSetter(
+                            post.getTitle(),
+                            post.getContent()
+                    );
+            pstmtSetter.setParameters(pstmt);
 
             pstmt.executeUpdate();
 
@@ -61,7 +66,8 @@ public class PostDao {
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setLong(1, id);
+            PreparedStatementSetter pstmtSetter = runPreparedStatementSetter(id);
+            pstmtSetter.setParameters(pstmt);
 
             ResultSet rs = pstmt.executeQuery();
 
@@ -106,9 +112,13 @@ public class PostDao {
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, post.getTitle());
-            pstmt.setString(2, post.getContent());
-            pstmt.setLong(3, id);
+            PreparedStatementSetter pstmtSetter =
+                    runPreparedStatementSetter(
+                            post.getTitle(),
+                            post.getContent(),
+                            id
+                    );
+            pstmtSetter.setParameters(pstmt);
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -122,11 +132,24 @@ public class PostDao {
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setLong(1, id);
+            PreparedStatementSetter pstmtSetter = runPreparedStatementSetter(id);
+            pstmtSetter.setParameters(pstmt);
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException(e);
         }
+    }
+
+    private PreparedStatementSetter runPreparedStatementSetter(Object... parameters) {
+        return createPreparedStatementSetter(parameters);
+    }
+
+    private PreparedStatementSetter createPreparedStatementSetter(Object... parameters) {
+        return pstmt -> {
+            for (int i = 0; i < parameters.length; i++) {
+                pstmt.setObject(i + 1, parameters[i]);
+            }
+        };
     }
 }

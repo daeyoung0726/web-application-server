@@ -1,6 +1,7 @@
 package board.domain.user.repository;
 
 import board.database.ConnectionManager;
+import board.database.PreparedStatementSetter;
 import board.database.RowMapper;
 import board.database.exception.DataAccessException;
 import board.domain.user.exception.UserException;
@@ -36,10 +37,14 @@ public class UserDao {
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, user.getUsername());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getName());
-            pstmt.setString(4, user.getEmail());
+            PreparedStatementSetter pstmtSetter =
+                    runPreparedStatementSetter(
+                            user.getUsername(),
+                            user.getPassword(),
+                            user.getName(),
+                            user.getEmail()
+                    );
+            pstmtSetter.setParameters(pstmt);
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -54,7 +59,8 @@ public class UserDao {
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, username);
+            PreparedStatementSetter pstmtSetter = runPreparedStatementSetter(username);
+            pstmtSetter.setParameters(pstmt);
 
             ResultSet rs = pstmt.executeQuery();
 
@@ -101,10 +107,14 @@ public class UserDao {
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, user.getPassword());
-            pstmt.setString(2, user.getName());
-            pstmt.setString(3, user.getEmail());
-            pstmt.setString(4, username);
+            PreparedStatementSetter pstmtSeter =
+                    runPreparedStatementSetter(
+                            user.getPassword(),
+                            user.getName(),
+                            user.getEmail(),
+                            username
+                    );
+            pstmtSeter.setParameters(pstmt);
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -118,11 +128,24 @@ public class UserDao {
         try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, username);
+            PreparedStatementSetter pstmtSetter = runPreparedStatementSetter(username);
+            pstmtSetter.setParameters(pstmt);
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException(e);
         }
+    }
+
+    private PreparedStatementSetter runPreparedStatementSetter(Object... parameters) {
+        return createPreparedStatementSetter(parameters);
+    }
+
+    private PreparedStatementSetter createPreparedStatementSetter(Object... parameters) {
+        return pstmt -> {
+            for (int i = 0; i < parameters.length; i++) {
+                pstmt.setObject(i + 1, parameters[i]);
+            }
+        };
     }
 }
