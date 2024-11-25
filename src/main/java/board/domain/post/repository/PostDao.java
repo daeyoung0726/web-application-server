@@ -1,40 +1,133 @@
 package board.domain.post.repository;
 
-import board.database.ConnectionMaker;
-import board.database.DataBase;
+import board.database.ConnectionManager;
+import board.database.exception.DataAccessException;
+import board.domain.post.exception.PostException;
+import board.domain.post.exception.PostExceptionCode;
 import board.domain.post.model.Post;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostDao {
     private static final PostDao postDao = new PostDao();
-    private final DataBase<Post> postDataBase;
 
-    private PostDao() {
-        this.postDataBase = ConnectionMaker.getPostDataBase();
-    }
+    private PostDao() {}
 
     public static PostDao getInstance() {
         return postDao;
     }
 
     public Long savePost(Post post) {
-        return (Long) postDataBase.add(post);
+        String sql = "INSERT INTO \"Post\"(title, content) VALUES(?, ?)";
+        Long id = null;
+
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setString(1, post.getTitle());
+            pstmt.setString(2, post.getContent());
+
+            pstmt.executeUpdate();
+
+            ResultSet rs = pstmt.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getLong(1);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            throw new DataAccessException(e);
+        }
+
+        return id;
     }
 
     public Post findPostById(Long id) {
-        return postDataBase.findById(id);
+        String sql = "SELECT * FROM \"Post\" WHERE id = ?";
+        Post post = null;
+
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, id);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                post = new Post(
+                        rs.getLong("id"),
+                        rs.getString("title"),
+                        rs.getString("content")
+                );
+            }
+
+            rs.close();
+        } catch (SQLException e) {
+            throw new DataAccessException(e);
+        }
+
+        if (post == null)
+            throw new PostException(PostExceptionCode.POST_NOT_FOUND);
+        return post;
     }
 
     public List<Post> findAllPosts() {
-        return postDataBase.findAll();
+        String sql = "SELECT * FROM \"Post\"";
+        List<Post> posts = new ArrayList<>();
+
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Post post = new Post(
+                        rs.getLong("id"),
+                        rs.getString("title"),
+                        rs.getString("content")
+                );
+                posts.add(post);
+            }
+
+            rs.close();
+        } catch (SQLException e) {
+            throw new DataAccessException(e);
+        }
+        return posts;
     }
 
     public void updatePost(Long id, Post post) {
-        postDataBase.updateById(id, post);
+        String sql = "UPDATE \"Post\" SET title = ?, content = ? WHERE id = ?";
+
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, post.getTitle());
+            pstmt.setString(2, post.getContent());
+            pstmt.setLong(3, id);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e);
+        }
     }
 
     public void deletePost(Long id) {
-        postDataBase.deleteById(id);
+        String sql = "DELETE FROM \"Post\" WHERE id = ?";
+
+        try (Connection conn = ConnectionManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, id);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e);
+        }
     }
 }
