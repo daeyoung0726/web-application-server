@@ -1,1 +1,16 @@
-# tech-exploration-board
+## 참고 서적 : 자바 웹 프로그래밍 Next Step
+
+### 주요 기능
+ #### 소켓 통신 구현
+  - HTTP 요청과 응답을 처리하는 간단한 서버-클라이언트 로직.
+ #### 웹 동작 원리 구현
+  - HTTP 요청 파싱, 라우팅, 상태 코드 처리 등의 웹 서버 동작을 구현.
+
+----------
+
+### branch
+ #### `socket-board`
+  - 통신 구조 구현
+ #### `socket-add-database`
+  - h2 DB 연결
+
